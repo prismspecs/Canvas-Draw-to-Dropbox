@@ -1,16 +1,37 @@
+/*
+  give post it notes a minimum life
+  look at post it thats about to be replaced, has it been there for 60 secs? if not, dont check for new files
+
+
+  add keyboard mode
+  give a selection of 2 fonts to choose from (big one, small one) but randomize those 2 fonts on load
+
+
+  add brush thickness selection
+
+
+*/
+
+
+var readyToGo = false; // secret agent mode: must tap the eye after hitting save.
+
+
 $(document).ready(function() {
+	// let's randomize some fonts teehee
 	$("#thankyou").fadeOut(0);
 	$("#thankyou").css("opacity", 1);
+
 });
 
+
 // flags
+var lowResMode = false;
 var ratio = 1.2048192771;
-ratio = 1.0;
 
 var brush = 0; // 0 small, 1 med, 2 large
 
 // target the entire page, and listen for touch events
-$('canvas').on('touchstart', function(e) {
+$('canvas').on('touchstart touchmove', function(e) {
 	//prevent native touch activity like scrolling
 	e.preventDefault();
 });
@@ -59,7 +80,10 @@ function Pen(new_context) {
 	this.started = false;
 	var move_count = 0;
 
-	context.lineWidth = 10;
+	if (lowResMode)
+		context.lineWidth = 2.5;
+	else
+		context.lineWidth = 10;
 
 	context.lineJoin = 'round';
 	context.lineCap = 'round';
@@ -69,9 +93,6 @@ function Pen(new_context) {
 	// create an in-memory canvas
 	var memCanvas = document.createElement('canvas');
 
-	context.fillStyle = "blue";
-	context.fillRect(0, 0, canvas.width, canvas.height);
-
 	memCanvas.width = canvas.scrollWidth;
 	memCanvas.height = canvas.scrollHeight;
 
@@ -79,19 +100,18 @@ function Pen(new_context) {
 
 	this.points = [];
 
-	this.mousedown = function(ev) {
+	this.touchstart = function(ev) {
 		tool.points.push({
 			x: ev._x,
 			y: ev._y
 		});
 		tool.started = true;
-		console.log("mouse down");
+
 	};
-	this.mousemove = function(ev) {
+
+	this.touchmove = function(ev) {
 		if (tool.started) {
 			context.clearRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
-			context.fillStyle = "white";
-			context.fillRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio);
 			// put back the saved content
 			context.drawImage(memCanvas, 0, 0);
 			tool.points.push({
@@ -100,15 +120,18 @@ function Pen(new_context) {
 			});
 			drawPoints(context, tool.points);
 		}
-		console.log("mouse move");
 	};
-	this.mouseup = function(ev) {
+
+	this.touchend = function(ev) {
 		if (tool.started) {
 
 			// should we draw a dot?
 			if (tool.points.length < 2) {
 				context.beginPath();
-				context.arc(ev._x, ev._y, 5, 0, 2 * Math.PI, false);
+				if (lowResMode)
+					context.arc(ev._x, ev._y, 2, 0, 2 * Math.PI, false);
+				else
+					context.arc(ev._x, ev._y, 5, 0, 2 * Math.PI, false);
 				context.fillStyle = 'black';
 				context.fill();
 				context.closePath();
@@ -125,62 +148,10 @@ function Pen(new_context) {
 		}
 	};
 
-	// this.touchstart = function(ev) {
-	// 	tool.points.push({
-	// 		x: ev._x,
-	// 		y: ev._y
-	// 	});
-	// 	tool.started = true;
-	//
-	// };
-	//
-	// this.touchmove = function(ev) {
-	// 	if (tool.started) {
-	// 		context.clearRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
-	context.fillStyle = "white";
-	context.fillRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio); //
-	// put back the saved content
-	// 		context.drawImage(memCanvas, 0, 0);
-	// 		tool.points.push({
-	// 			x: ev._x,
-	// 			y: ev._y
-	// 		});
-	// 		drawPoints(context, tool.points);
-	// 	}
-	// };
-	//
-	// this.touchend = function(ev) {
-	// 	if (tool.started) {
-	//
-	// 		// should we draw a dot?
-	// 		if (tool.points.length < 2) {
-	// 			context.beginPath();
-	// 			if (lowResMode)
-	// 				context.arc(ev._x, ev._y, 2, 0, 2 * Math.PI, false);
-	// 			else
-	// 				context.arc(ev._x, ev._y, 5, 0, 2 * Math.PI, false);
-	// 			context.fillStyle = 'black';
-	// 			context.fill();
-	// 			context.closePath();
-	// 		}
-	//
-	// 		tool.started = false;
-	// 		// When the pen is done, save the resulting context
-	// 		// to the in-memory canvas
-	// 		memCtx.clearRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
-	// 		memCtx.drawImage(canvas, 0, 0);
-	// 		tool.points = [];
-	//
-	// 		cPush();
-	// 	}
-	// };
-
 
 	this.undo = function(incoming) {
 		console.log(incoming);
 		context.clearRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio);
-		context.fillStyle = "white";
-		context.fillRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio);
 		context.drawImage(incoming, 0, 0);
 
 		memCtx.clearRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio);
@@ -191,8 +162,6 @@ function Pen(new_context) {
 	// clear both canvases!
 	this.clear = function() {
 		context.clearRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio);
-		context.fillStyle = "white";
-		context.fillRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio);
 		memCtx.clearRect(0, 0, canvas.scrollWidth * ratio, canvas.scrollHeight * ratio);
 	};
 
@@ -216,10 +185,18 @@ function ev_canvas(ev) {
 		ev._y = ev.offsetY;
 	}
 
-
-	ev._x *= ratio;
-	ev._y *= ratio;
-
+	if (lowResMode) {
+		// adjust ratio, since canvas is 83%
+		ev._x *= ratio;
+		ev._y *= ratio;
+		ev._x = ev._x / 2;
+		ev._y = ev._y / 2;
+	} else {
+		// ev._x = ev._x - 0;
+		// ev._y = ev._y - 0;
+		ev._x *= ratio;
+		ev._y *= ratio;
+	}
 
 	// Call appropriate event handler
 	var func = PEN[ev.type];
@@ -249,32 +226,41 @@ setTimeout(function() {
 	// Bind canvas to listeners
 	var canvas = document.getElementById('canvas');
 
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
+	// set up post it note image background so that its
+	// a little bit bigger than the drawing area
+	var postbg = document.getElementById('postbg');
+
+	var marginTop = (document.body.scrollHeight - postbg.scrollWidth) / 2;
+	$("#postbg").css({
+		top: marginTop,
+		height: postbg.scrollWidth
+	});
+
+	if (lowResMode)
+		canvas.width = postbg.scrollWidth / 2;
+	else
+		canvas.width = postbg.scrollWidth;
+
+	canvas.height = canvas.width;
+
+
 
 	PEN = new Pen(canvas.getContext('2d'));
 
 	changeBrush(1);
 
-	// canvas.addEventListener('touchstart', ev_canvas, false);
-	// canvas.addEventListener('touchmove', ev_canvas, false);
-	// canvas.addEventListener('touchend', ev_canvas, false);
-	canvas.addEventListener('mousedown', ev_canvas, false);
-	canvas.addEventListener('mousemove', ev_canvas, false);
-	canvas.addEventListener('mouseup', ev_canvas, false);
-
-
-
+	canvas.addEventListener('touchstart', ev_canvas, false);
+	canvas.addEventListener('touchmove', ev_canvas, false);
+	canvas.addEventListener('touchend', ev_canvas, false);
 }, 500);
 
 
 
 function getReady() {
-
+	readyToGo = true;
 	$("#thankyou").fadeIn("slow", function() {
 		// Animation complete
 		$("#thankyou").delay(1000).fadeOut("slow");
-		uploadFile();
 	});
 }
 
@@ -282,35 +268,38 @@ function getReady() {
 
 function uploadFile() {
 
-	// access tokens in accesstoken.js
+	if (readyToGo) {
 
-	var dbx = new Dropbox.Dropbox({
-		accessToken: ACCESS_TOKEN
-	});
+		// access tokens migrated to accesstoken.js
 
-	//Get data from canvas
-	var imageSringData = canvas.toDataURL('image/png');
-	//Convert it to an arraybuffer
-	var imageData = _base64ToArrayBuffer(imageSringData);
-
-
-	dbx.filesUpload({
-			path: "/Protest-Gen-Signs/" + Date.now() + ".png",
-			contents: imageData
-		})
-		.then(function(response) {
-			// var results = document.getElementById('results');
-			// results.appendChild(document.createTextNode('File uploaded!'));
-			console.log(response);
-			alert(response.name);
-		})
-		.catch(function(error) {
-			console.error(error);
+		var dbx = new Dropbox.Dropbox({
+			accessToken: ACCESS_TOKEN
 		});
 
-	PEN.clear();
+		//Get data from canvas
+		var imageSringData = canvas.toDataURL('image/png');
+		//Convert it to an arraybuffer
+		var imageData = _base64ToArrayBuffer(imageSringData);
 
-	return false;
+
+		dbx.filesUpload({
+				path: '/' + Date.now() + ".png",
+				contents: imageData
+			})
+			.then(function(response) {
+				// var results = document.getElementById('results');
+				// results.appendChild(document.createTextNode('File uploaded!'));
+				console.log(response);
+				alert(response.name);
+			})
+			.catch(function(error) {
+				console.error(error);
+			});
+
+		PEN.clear();
+
+		return false;
+	}
 }
 
 
@@ -342,6 +331,8 @@ function changeBrush(n) {
 
 	PEN.changeBrushSize(bSize);
 }
+
+
 
 
 

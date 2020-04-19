@@ -8,199 +8,54 @@
   <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <style>
-    #thankyou {
-      position: fixed;
-      pointer-events: none;
-      left: 0px;
-      top: 0px;
-      width: 100%;
-      height: 100%;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-image: url("assets/thankyou.png");
-      z-index: 9999;
-      opacity: 0;
-    }
 
     body,
     html {
       margin: 0;
       height: 100%;
-      font-family: 'Gloria Hallelujah', cursive;
-      font-size: 18px;
 
-      background-image: url("assets/bg-wpostit.png");
-      background-repeat: no-repeat;
-      background-size: 100%;
     }
 
-    #clear,
-    #undo,
-    #save,
-    #mode {
-      position: absolute;
-      top: 5.7%;
-      height: 6%;
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-position: center center;
-      /*background-color: rgba(255,0,0,.5);*/
-    }
-
-    #undo {
-      left: 15.5%;
-      width: 11%;
-      background-image: url("assets/undo.png");
-    }
-
-    #save {
-      left: 29.8%;
-      width: 13.3%;
-      background-image: url("assets/save.png");
-    }
-
-    #clear {
-      left: 50%;
-      width: 17.4%;
-      background-image: url("assets/clear.png");
-    }
-
-    #mode {
-      left: 74.5%;
-      width: 10%;
-      background-image: url("assets/keyboard.png");
-    }
-
-    #eyeball,
-    #info,
-    #brushbox {
-      position: absolute;
-      width: 25%;
-      height: 11.5%;
-      bottom: 4.7%;
-      background-repeat: no-repeat;
-      background-size: contain;
-    }
-
-    #brushbox {
-      left: 7.1%;
-      width: 21.6%;
-      border: #fff 2px solid;
-      /*background-image: url("assets/brush-0.png");*/
-    }
-
-    #brush,
-    #b1,
-    #b2,
-    #b0 {
-      position: absolute;
-      background-repeat: no-repeat;
-      background-size: contain;
-    }
-
-    #brush {
-      left: 20%;
-      top: 15.2%;
-      width: 59.8%;
-      height: 27.8%;
-      background-image: url("assets/brush.png");
-    }
-
-    #b0 {
-      left: 3%;
-      top: 46%;
-      width: 50%;
-      height: 50%;
-      background-image: url("assets/b0.png");
-    }
-
-    #b1 {
-      left: 31%;
-      top: 46%;
-      width: 50%;
-      height: 50%;
-      background-image: url("assets/b1.png");
-    }
-
-    #b2 {
-      left: 60%;
-      top: 46%;
-      width: 50%;
-      height: 50%;
-      background-image: url("assets/b2.png");
-    }
-
-    #eyeball {
-      left: 35.8%;
-      background-image: url("assets/eye.png");
-    }
-
-    #info {
-      right: 8.7%;
-      background-image: url("assets/bkgaze.png");
-    }
-
-    .lock-screen {
-      height: 100%;
-      overflow: hidden;
-      width: 100%;
-      position: fixed;
-    }
-
-    #postbg {
-      position: fixed;
-      width: 100%;
-      height: 100px;
-      /*background-size: 100%;
-      background-image: url("post-it.png");
-      background-repeat: no-repeat;*/
-      z-index: 0;
-    }
 
     canvas {
       /*float: left;*/
-      position: fixed;
+      /* position: fixed;
       top: 18%;
       left: 7%;
       width: 83%;
-      z-index: 10;
+      z-index: 10; */
       /*background-color:rgba(255,0,0,.5);*/
+      position: fixed;
+      width:100%;
+      height:100%;
+
+    }
+    #controls {
+      position: absolute;
+      left:0px;
+      top:0px;
     }
   </style>
 
 </head>
-
-<body class="lock-screen">
-
-  <div id="thankyou"></div>
-
-  <div id="eyeball" onclick='uploadFile()'></div>
-  <div id="brushbox">
-    <div id="brush"></div>
-    <div id="b0" onclick='changeBrush(0)'></div>
-    <div id="b1" onclick='changeBrush(1)'></div>
-    <div id="b2" onclick='changeBrush(2)'></div>
-  </div>
-  <div id="info"></div>
-
-  <div id="postbg">
-
-  </div>
+<body>
 
   <canvas id="canvas"></canvas>
 
+  <div id="thankyou">
+    hey thanks
+  </div>
 
-  <div id="clear" onclick='PEN.clear()'></div>
-  <div id="undo" onclick='cUndo()'></div>
-  <div id="save" onclick='getReady()'></div>
-  <div id="mode" onclick="location.href='type.html';"></div>
+  <div id="controls">
+    <div id="clear" onclick='PEN.clear()'>clear</div>
+    <div id="undo" onclick='cUndo()'>undo</div>
+    <div id="save" onclick='getReady()'>save</div>
+    <div id="mode" onclick="location.href='type.html';">mode</div>
+  </div>
 
 
-  <!-- A place to show the status of the upload -->
-  <h2 id="results"></h2>
-
-  <script src="accesstoken.js?ver=10"></script>
-  <script src="draw.js?ver=10"></script>
+  <script src="accesstoken.js"></script>
+  <script src="draw.js"></script>
 
 
 </body>
