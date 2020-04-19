@@ -13,7 +13,6 @@
     html {
       margin: 0;
       height: 100%;
-
     }
 
 
@@ -34,6 +33,33 @@
       position: absolute;
       left:0px;
       top:0px;
+      width:10%;
+      height:100%;
+    }
+    #clear,
+    #undo,
+    #save,
+    #mode {
+      position:relative;
+      width:100%;
+      height:5%;
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center center;
+      margin-top:10px;
+      /*background-color: rgba(255,0,0,.5);*/
+    }
+    #save {
+      background-image: url("assets/save2.png");
+    }
+    #undo {
+      background-image: url("assets/undo2.png");
+    }
+    #clear {
+      background-image: url("assets/clear2.png");
+    }
+    #mode {
+      background-image: url("assets/keyboard2.png");
     }
   </style>
 
@@ -47,10 +73,10 @@
   </div>
 
   <div id="controls">
-    <div id="clear" onclick='PEN.clear()'>clear</div>
-    <div id="undo" onclick='cUndo()'>undo</div>
-    <div id="save" onclick='getReady()'>save</div>
-    <div id="mode" onclick="location.href='type.html';">mode</div>
+    <div id="clear" onclick='PEN.clear()'></div>
+    <div id="undo" onclick='cUndo()'></div>
+    <div id="save" onclick='getReady()'></div>
+    <div id="mode" onclick="location.href='type.html';"></div>
   </div>
 
 
