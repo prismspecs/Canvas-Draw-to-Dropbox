@@ -56,6 +56,7 @@ function cUndo() {
 function Pen(new_context) {
 	var tool = this;
 	var context = new_context;
+	context.imageSmoothingEnabled = true;
 	this.started = false;
 	var move_count = 0;
 
@@ -256,9 +257,9 @@ setTimeout(function() {
 
 	changeBrush(1);
 
-	// canvas.addEventListener('touchstart', ev_canvas, false);
-	// canvas.addEventListener('touchmove', ev_canvas, false);
-	// canvas.addEventListener('touchend', ev_canvas, false);
+	canvas.addEventListener('touchstart', ev_canvas, false);
+	canvas.addEventListener('touchmove', ev_canvas, false);
+	canvas.addEventListener('touchend', ev_canvas, false);
 	canvas.addEventListener('mousedown', ev_canvas, false);
 	canvas.addEventListener('mousemove', ev_canvas, false);
 	canvas.addEventListener('mouseup', ev_canvas, false);
@@ -273,7 +274,6 @@ function getReady() {
 
 	$("#thankyou").fadeIn("slow", function() {
 		// Animation complete
-		$("#thankyou").delay(1000).fadeOut("slow");
 		uploadFile();
 	});
 }
@@ -302,7 +302,8 @@ function uploadFile() {
 			// var results = document.getElementById('results');
 			// results.appendChild(document.createTextNode('File uploaded!'));
 			console.log(response);
-			alert(response.name);
+			//alert(response.name);
+			window.location.href = "success.html";
 		})
 		.catch(function(error) {
 			console.error(error);

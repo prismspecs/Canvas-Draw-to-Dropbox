@@ -24,6 +24,10 @@ $(document).ready(function() {
 	randizeFonts();
 	$("#thankyou").fadeOut(0);
 	$("#thankyou").css("opacity", 1);
+	context = canvas.getContext('2d');
+	context.clearRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
+	context.fillStyle = "white";
+	context.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
 
 });
 
@@ -66,47 +70,6 @@ $('#typebox').keypress(function() {
 
 	var len = $(this).val().length;
 
-	// var newFontSize = 0;
-	//
-	// if(len < 36 && len >= 0) {
-	//   newFontSize = 200;
-	// }
-	//
-	// if(len < 50 && len > 36) {
-	//   newFontSize = 180;
-	// }
-	//
-	// if(len < 70 && len > 50) {
-	//   newFontSize = 160;
-	// }
-	//
-	// if(len < 90 && len > 70) {
-	//   newFontSize = 150;
-	// }
-	//
-	// if(len < 200 && len > 90) {
-	//   newFontSize = 120;
-	// }
-	//
-	// if(screen.height < 1500) {
-	//   newFontSize *= .5;
-	// }
-
-
-	// var newFontSize = parseInt($(this).css('font-size'));
-	//
-	// while($(this)[0].scrollHeight > $(this).height() + 5) {
-	//   newFontSize -= 2;
-	//   $(this).css('font-size', newFontSize + "px");
-	// }
-	//
-	// if(len == 0) {
-	//   newFontSize = 200;
-	//   $(this).css('font-size', newFontSize + "px");
-	// }
-
-	// console.log($(this)[0].scrollHeight);
-
 });
 
 var intervalID = window.setInterval(refreshTyping, 500);
@@ -131,9 +94,8 @@ setTimeout(function() {
 	// Bind canvas to listeners
 	var canvas = document.getElementById('canvas');
 
-	canvas.width = 500;
-	canvas.height = canvas.width;
-
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 
 }, 500);
 
@@ -142,7 +104,7 @@ function getReady() {
 	readyToGo = true;
 	$("#thankyou").fadeIn("slow", function() {
 		// Animation complete
-		$("#thankyou").delay(1000).fadeOut("slow");
+		uploadFile();
 	});
 }
 
@@ -154,12 +116,19 @@ function uploadFile() {
 		//var canvas = document.getElementById("canvas");
 		var typebox = document.getElementById("typebox");
 
-		html2canvas(typebox).then(function(canvas) {
-			//imageStringData = canvas.toDataURL('image/png');
+		// make image proportions correct
+		var w = typebox.offsetWidth;
+		typebox.style.height = w * .67;
 
-			// access tokens migrated to accesstoken.js
+		html2canvas(typebox).then(function(textcanvas) {
 
-			var dbx = new Dropbox({
+			var context = canvas.getContext('2d');
+			context.fillStyle = "white";
+			context.fillRect(0, 0, canvas.scrollWidth, canvas.scrollHeight);
+
+			context.drawImage(textcanvas, $("#typebox").position().left, $("#typebox").position().top);
+
+			var dbx = new Dropbox.Dropbox({
 				accessToken: ACCESS_TOKEN
 			});
 
@@ -168,16 +137,17 @@ function uploadFile() {
 			var imageStringData = canvas.toDataURL('image/png');
 			var imageData = _base64ToArrayBuffer(imageStringData);
 
-
 			dbx.filesUpload({
-					path: '/' + Date.now() + ".png",
+					path: "/Protest-Gen-Signs/" + Date.now() + ".png",
 					contents: imageData
 				})
 				.then(function(response) {
 					// var results = document.getElementById('results');
 					// results.appendChild(document.createTextNode('File uploaded!'));
 					console.log(response);
-					alert(response.name);
+					//alert(response.name);
+					window.location.href = "success.html";
+
 				})
 				.catch(function(error) {
 					console.error(error);

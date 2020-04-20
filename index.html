@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>BPL Post-it</title>
+  <title>Protest Generator</title>
   <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah" rel="stylesheet">
@@ -13,6 +13,7 @@
     html {
       margin: 0;
       height: 100%;
+      background-color:white;
     }
 
 
@@ -50,16 +51,31 @@
       /*background-color: rgba(255,0,0,.5);*/
     }
     #save {
-      background-image: url("assets/save2.png");
+      background-image: url("assets/save.png");
     }
     #undo {
-      background-image: url("assets/undo2.png");
+      background-image: url("assets/undo.png");
     }
     #clear {
-      background-image: url("assets/clear2.png");
+      background-image: url("assets/clear.png");
     }
     #mode {
-      background-image: url("assets/keyboard2.png");
+      background-image: url("assets/keyboard.png");
+    }
+    #thankyou {
+      position: fixed;
+      pointer-events: none;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+      background-color:black;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      background-position:center center;
+      background-image: url("assets/submitted.png");
+      z-index: 9999;
+      opacity: 0;
     }
   </style>
 
@@ -69,16 +85,15 @@
   <canvas id="canvas"></canvas>
 
   <div id="thankyou">
-    hey thanks
+
   </div>
 
   <div id="controls">
-    <div id="clear" onclick='PEN.clear()'></div>
-    <div id="undo" onclick='cUndo()'></div>
     <div id="save" onclick='getReady()'></div>
     <div id="mode" onclick="location.href='type.html';"></div>
+    <div id="undo" onclick='cUndo()'></div>
+    <div id="clear" onclick='PEN.clear()'></div>
   </div>
-
 
   <script src="accesstoken.js"></script>
   <script src="draw.js"></script>

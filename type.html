@@ -2,186 +2,81 @@
 <html>
 
 <head>
-  <title>BPL Post-it</title>
+  <title>Protest Generator</title>
   <script src="https://unpkg.com/dropbox/dist/Dropbox-sdk.min.js"></script>
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="html2canvas.js"></script>
 
   <link href="https://fonts.googleapis.com/css?family=Amatic+SC:700|Architects+Daughter|Caveat+Brush|Caveat:700|Covered+By+Your+Grace|Handlee|Kalam|Neucha|Patrick+Hand|Patrick+Hand+SC|Rancho|Satisfy|Shadows+Into+Light+Two" rel="stylesheet">
 
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <style>
-    @font-face {
-      font-family: "Verlag Black";
-      src: url("verlag.otf") format("opentype");
-    }
-
-    #thankyou { position:fixed; pointer-events: none; left:0px; top:0px; width:100%; height:100%; background-size: contain; background-repeat: no-repeat; background-image: url("assets/thankyou.png"); z-index:9999; opacity:0; }
-
     body,
     html {
       margin: 0;
       height: 100%;
-      font-size: 18px;
+      background-color: white;
+    }
 
-      background-image: url("assets/bg-wpostit.png");
-      background-repeat: no-repeat;
-      background-size: 100%;
+
+    canvas {
+      /*float: left;*/
+      /* position: fixed;
+          top: 18%;
+          left: 7%;
+          width: 83%;
+          z-index: 10; */
+      /* background-color:white; */
+      position: fixed;
+      width: 100%;
+      height: 100%;
+
+    }
+
+    #controls {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 6%;
+      height: 100%;
+      z-index: 10;
     }
 
     #clear,
     #undo,
     #save,
     #mode {
-      position: absolute;
-      top: 5.7%;
-      height: 6%;
+      position: relative;
+      width: 100%;
+      height: 5%;
       background-repeat: no-repeat;
       background-size: contain;
       background-position: center center;
+      margin-top: 10px;
       /*background-color: rgba(255,0,0,.5);*/
     }
 
-    #undo {
-      left: 15.5%;
-      width: 11%;
-      background-image: url("assets/undo.png");
-      opacity:.25;
-    }
-
     #save {
-      left: 29.8%;
-      width: 13.3%;
       background-image: url("assets/save.png");
     }
 
+    #undo {
+      background-image: url("assets/undo.png");
+    }
+
     #clear {
-      left: 50%;
-      width: 17.4%;
       background-image: url("assets/clear.png");
     }
 
     #mode {
-      left: 73%;
-      width: 14.25%;
-      background-image: url("assets/stylus.png");
-    }
-
-    #eyeball,
-    #info,
-    #fontchoicebox {
-      position: absolute;
-      width: 25%;
-      height: 11.5%;
-      bottom: 4.7%;
-      background-repeat: no-repeat;
-      background-size: contain;
-    }
-
-    #fontchoicebox {
-      left: 7.1%;
-      width: 21.6%;
-      border: #fff 2px solid;
-    }
-
-    #f1,
-    #f2,
-    #a1,
-    #a2 {
-      position: absolute;
-      background-size: contain;
-    }
-
-    #f1 {
-      left: 12.5%;
-      top: 8%;
-      width: 32.6%;
-      height: 41.6%;
-      background-image: url("assets/f1.png");
-    }
-
-    #f2 {
-      left: 12.5%;
-      bottom: 8%;
-      width: 32.6%;
-      height: 41.6%;
-      background-image: url("assets/f2.png");
-    }
-
-    #a1 {
-      right: 12.5%;
-      top: 8%;
-      width: 32.6%;
-      height: 41.6%;
-      background-image: url("assets/a1.png");
-    }
-
-    #a2 {
-      right: 12.5%;
-      bottom: 8%;
-      width: 32.6%;
-      height: 41.6%;
-      background-image: url("assets/a2.png");
-    }
-
-    #fontchoice .fontlink {
-      display: block;
-      color: #fff;
-      font-weight: 700;
-      margin-bottom: 12px;
-      margin-top: 22px;
-    }
-
-    #fontchoice .alignmentlink {
-      display: block;
-      color: #fff;
-      font-weight: 700;
-      margin-bottom: 12px;
-      margin-top: 12px;
-    }
-
-    #eyeball {
-      left: 35.8%;
-      background-image: url("assets/eye.png");
-    }
-
-    #info {
-      right: 8.7%;
-      background-image: url("assets/bkgaze.png");
-    }
-
-    .lock-screen {
-      height: 100%;
-      overflow: hidden;
-      width: 100%;
-      position: fixed;
-    }
-
-    #postbg {
-      position: fixed;
-      width: 100%;
-      height: 100px;
-      /*background-size: 100%;
-      background-image: url("post-it.png");
-      background-repeat: no-repeat;*/
-      z-index: 0;
-    }
-
-    canvas {
-      /*float: left;*/
-      position: fixed;
-      top: 18%;
-      left: 7%;
-      width: 83%;
-      z-index: 10;
-      /*background-color:rgba(255,0,0,.5);*/
+      background-image: url("assets/draw.png");
     }
 
     #typebox {
       position: fixed;
-      top: 21%;
-      left: 9%;
-      width: 79%;
+      top: 0%;
+      left: 10%;
+      width: 80%;
       z-index: 11;
       background-color: rgba(0, 0, 0, 0);
       font-size: 300px;
@@ -189,88 +84,47 @@
       resize: none;
       text-align: center;
       /*max-height: 1120px;*/
-      max-height: 56%;
+      /* max-height: 56%; */
+      height: 100%;
     }
-
-    #typeboxdiv {
+    #thankyou {
       position: fixed;
-      top: 21%;
-      left: 9%;
-      width: 79%;
-      z-index: 11;
-      background-color: rgba(0, 0, 0, 0);
-      font-size: 300px;
-      border: none;
-      resize: none;
-      text-align: center;
-      /*max-height: 1120px;*/
-      height: 56%;
-      display: block;
-    }
-
-
-    @media (max-height: 1024px) {
-      #fontchoice {
-        font-size: 37px;
-      }
-
-      #fontchoice .fontlink {
-        margin-bottom: 6px;
-        margin-top: 11px;
-      }
-
-      #fontchoice .alignmentlink img {
-        width: 50%;
-        margin-top: 6px;
-        margin-bottom: 6px;
-      }
-
-      #typebox {
-        font-size: 200px;
-      }
+      pointer-events: none;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+      background-color:black;
+      background-size: 100%;
+      background-repeat: no-repeat;
+      background-position:center center;
+      background-image: url("assets/submitted.png");
+      z-index: 9999;
+      opacity: 0;
     }
   </style>
 
 </head>
 
-<body class="lock-screen">
+<body>
+  <div id="thankyou">
 
-  <div id="thankyou"></div>
-
-  <div id="eyeball" onclick="uploadFile();"></div>
-  <div id="fontchoicebox">
-    <div id="f1" onclick='switchFont(1);'></div>
-    <div id="f2" onclick='switchFont(2);'></div>
-    <div id="a1" onclick='switchAlign(1);'></div>
-    <div id="a2" onclick='switchAlign(2);'></div>
   </div>
 
-  <div id="info"></div>
+  <div id="controls">
+    <div id="save" onclick='getReady()'></div>
+    <div id="mode" onclick="location.href='index.html';"></div>
+    <div id="undo" onclick='cUndo()'></div>
+    <div id="clear" onclick='PEN.clear()'></div>
+  </div>
 
   <canvas id="canvas"></canvas>
 
-  <!-- <div id="typeboxdiv" contenteditable="true"></div> -->
-  <textarea id="typebox" name="textarea" cols="30" rows="10"></textarea>
+  <textarea id="typebox" name="textarea" contenteditable="true"></textarea>
 
-  <div id="clear" onclick='clearText()'></div>
-  <div id="undo" onclick='cUndo()'></div>
-  <div id="save" onclick='getReady()'></div>
-  <div id="mode" onclick="location.href='index.html';"></div>
 
-  <!-- <form onSubmit="return uploadFile()">
-    <input type="text" id="access-token" placeholder="Access token" />
-    <input type="file" id="file-upload" />
-    <button type="submit">Submit</button>
-  </form> -->
-
-  <!-- A place to show the status of the upload -->
-  <h2 id="results"></h2>
-
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
-
-  <script src="accesstoken.js?ver=10"></script>
-  <script src="type.js?ver=10"></script>
-
+  <script src="accesstoken.js"></script>
+  <script src="type.js"></script>
 
 
 </body>
